@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	color-scheme: dark;
+	--radius: 14px;
+}
+
+@layer base {
+	html {
+		background: black;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+::marker,
+::-webkit-details-marker {
+	display: none !important;
+}
+
+summary {
+	display: flex;
+}
+
+button {
+	cursor: pointer !important;
+	border: 0;
+}
+
+ul {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+:focus-visible {
+	outline: 0;
+}

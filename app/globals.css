@@ -10,6 +10,7 @@
 @layer base {
 	html {
 		background: black;
+		scrollbar-width: 0 !important;
 	}
 
 	body {
@@ -57,6 +58,10 @@ a {
 	outline: 0;
 }
 
-.user_cb + .genieus_cb {
+.user_cb + .genieus_cb, .genieus_cb + .user_cb {
 	@apply mt-2;
+}
+
+::-webkit-scrollbar {
+	display: none !important;
 }

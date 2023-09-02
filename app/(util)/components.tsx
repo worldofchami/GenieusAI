@@ -57,7 +57,7 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
 export const ChatContainer = ({ children }: PropsWithChildren) => {
     return (
         <>
-        <div className="w-fit h-full flex flex-col gap-y-2 overflow-auto">
+        <div className="w-fit h-full flex flex-col gap-y-2 overflow-auto pt-4 pb-2 mb-4">
             {children}
         </div>
         </>

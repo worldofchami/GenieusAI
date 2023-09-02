@@ -11,6 +11,18 @@
 	html {
 		background: black;
 	}
+
+	body {
+		color: #CDCDCD;
+	}
+
+	.stdborder {
+		@apply border-[1px] border-contrast;
+	}
+
+	.rounded-xs {
+		border-radius: 8px;
+	}
 }
 
 * {
@@ -43,4 +55,8 @@ a {
 
 :focus-visible {
 	outline: 0;
+}
+
+.user_cb + .genieus_cb {
+	@apply mt-2;
 }

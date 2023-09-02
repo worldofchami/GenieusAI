@@ -1,4 +1,10 @@
 import "./globals.css";
+import { Bricolage_Grotesque } from "next/font/google";
+
+const bricolageGrotesque = Bricolage_Grotesque({
+    subsets: ["latin"],
+    display: "swap",
+});
 
 export const metadata = {
     title: "GenieusAI",
@@ -12,7 +18,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body>
+            <body className={bricolageGrotesque.className}>
                 <main className="w-full h-screen">
                     {children}
                 </main>

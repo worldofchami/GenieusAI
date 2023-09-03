@@ -1,10 +1,11 @@
 "use client"
 
 import { Loader2, Wand2Icon } from "lucide-react"
-import { ChangeEvent, FunctionComponent, PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, FunctionComponent, HTMLProps, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
 import { useChat } from "ai/react";
 import { PromptResponse } from "./interfaces";
 import { useCustomRef } from "./hooks";
+import { cn } from "@/lib/utils";
 
 interface ChatBubbleProps {
 
@@ -14,7 +15,7 @@ export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildr
     return (
         <>
         <div
-            className="w-fit h-fit max-w-[80%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right"
+            className="w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right"
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -29,7 +30,7 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
     return (
         <>
         <div
-            className="w-fit h-fit max-w-[80%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left"
+            className="w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left"
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -100,6 +101,13 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
     return (
         <>
         <div className="w-full h-full flex flex-col gap-y-2 overflow-auto pt-4 pb-2 mb-4" ref={chatRef}>
+            {
+                !children &&
+                <GenieusChatBubble>
+                    Welcome! I'm your personal AI genie {":)"} 🧞‍♂️
+                    Ask anything, and I'll do my best to grant you your wish... 🪄
+                </GenieusChatBubble>
+            }
             {children}
             {messageBlocks}
             {
@@ -127,6 +135,27 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
                 <Wand2Icon width={18} height={18} />
             </button>
         </form>
+        </>
+    )
+}
+
+interface TextInputProps extends HTMLProps<HTMLInputElement> {
+    label: string;
+}
+
+export const TextInput: FunctionComponent<TextInputProps> = ({ label, ...props }) => {
+    return (
+        <>
+        <div className="w-full h-full flex flex-col gap-y-1">
+            <label className="text-left text-xs font-light" htmlFor={`${label}-${useId()}`}>{label}</label>
+            <input
+                className={cn("h-10 w-full bg-[#1f1f1f] font-light text-xs rounded-[6px] stdborder pl-2", props.className)}
+                name="prompt"
+                autoFocus
+                autoComplete="off"
+                { ...props }
+            />
+        </div>
         </>
     )
 }

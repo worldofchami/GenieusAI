@@ -22,7 +22,9 @@ export default function RootLayout({
         <html lang="en">
             <body className={bricolageGrotesque.className}>
                 <main className="w-full h-screen">
-                    {children}
+                    <section className="w-96 h-[80vh] bg-bg px-6 pb-6 flex flex-col absolute my-auto top-0 bottom-0 right-8 rounded-lg border-[1px] border-contrast">
+                        {children}
+                    </section>
                 </main>
             </body>
         </html>

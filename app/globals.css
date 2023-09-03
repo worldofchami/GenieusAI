@@ -65,3 +65,7 @@ a {
 ::-webkit-scrollbar {
 	display: none !important;
 }
+
+:is(input[type="text"], input[type="email"]):invalid:not(:focus) {
+	@apply border-[#883c3c];
+}

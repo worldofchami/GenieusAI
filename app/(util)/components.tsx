@@ -1,22 +1,14 @@
 "use client"
 
 import { Wand2Icon } from "lucide-react"
-import { FunctionComponent, PropsWithChildren } from "react";
+import { FunctionComponent, PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { useChat } from "ai/react";
 
 export function TextInput() {
+
     return (
         <>
-        <div className="h-12 flex pl-4 rounded-[6px] bg-[#2F2F2F] stdborder">
-            <input
-                type="text"
-                placeholder="Ask me anything..."
-                className="h-full w-full bg-transparent font-light text-xs"
-                autoFocus
-            />
-            <div className="w-12 h-12 grid place-content-center cursor-pointer">
-                <Wand2Icon width={18} height={18} />
-            </div>
-        </div>
+        
         </>
     )
 }

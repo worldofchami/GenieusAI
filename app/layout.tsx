@@ -11,6 +11,8 @@ export const metadata = {
     description: "Your handy chatbot, always there to help!",
 };
 
+export const API_URL = process.env.NODE_ENV === "production" ? "" : "http://localhost:3000/api";
+
 export default function RootLayout({
     children,
 }: {

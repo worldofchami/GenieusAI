@@ -1,0 +1,11 @@
+{
+	"manifest_version": 3,
+	"name": "GenieusAI Chrome extension",
+	"short_name": "GenieusAI",
+	"version": "0.0.1",
+	"description": "Your personal chatbot",
+	"permissions": ["activeTab"],
+	"action": {
+	  "default_popup": "extension.html"
+	}
+  }

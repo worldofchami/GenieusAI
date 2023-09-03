@@ -1,11 +1,12 @@
 "use client"
 
 import { Loader2, Wand2Icon } from "lucide-react"
-import { ChangeEvent, FunctionComponent, HTMLProps, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
+import { ButtonHTMLAttributes, ChangeEvent, DetailedHTMLProps, FunctionComponent, HTMLProps, InputHTMLAttributes, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
 import { useChat } from "ai/react";
-import { PromptResponse } from "./interfaces";
+import { Message, PromptResponse } from "./interfaces";
 import { useCustomRef } from "./hooks";
 import { cn } from "@/lib/utils";
+import { twMerge } from "tailwind-merge";
 
 interface ChatBubbleProps {
 
@@ -41,7 +42,7 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
 }
 
 interface PromptFormProps {
-    submitPrompt: (prompt: string) => Promise<PromptResponse>;
+    submitPrompt: (chat: Message[]) => Promise<PromptResponse>;
 }
 
 interface MessageBlock {
@@ -56,6 +57,12 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
 
     const [messageBlocks, setMessageBlocks] = useState<ReactNode[]>([]);
 
+    // Initial message
+    const [messages, setMessages] = useState<Message[]>([{
+        role: "system",
+        content: "You are a helpful assistant named Genieus"
+    }]);
+
     const handleChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
         setPrompt(value);
     }
@@ -66,9 +73,16 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
         if(prompt) {    
             setLoading(true);
 
-            const { ok, reply } = await submitPrompt(prompt);
+            const { ok, reply } = await submitPrompt([...messages, {
+                role: "user",
+                content: prompt
+            }]);
             
-            addMessageBlocks({
+            setMessages((curr) => ([
+                ...curr,
+            ]))
+
+            addMessages({
                 prompt,
                 reply,
             });
@@ -88,8 +102,12 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
 
     }, [messageBlocks.length]);
 
-    const addMessageBlocks = (options: MessageBlock) => {
+    const addMessages = (options: MessageBlock) => {
         const { prompt, reply } = options;
+
+        setMessages((current) => ([
+            ...current, { role: "user", content: prompt }, { role: "assistant", content: reply }
+        ]));
 
         setMessageBlocks((current) => {
             return [...current, <UserChatBubble>{prompt}</UserChatBubble>, <GenieusChatBubble>{reply}</GenieusChatBubble>];
@@ -139,7 +157,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
     )
 }
 
-interface TextInputProps extends HTMLProps<HTMLInputElement> {
+interface TextInputProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     label: string;
 }
 
@@ -149,13 +167,30 @@ export const TextInput: FunctionComponent<TextInputProps> = ({ label, ...props }
         <div className="w-full h-full flex flex-col gap-y-1">
             <label className="text-left text-xs font-light" htmlFor={`${label}-${useId()}`}>{label}</label>
             <input
-                className={cn("h-10 w-full bg-[#1f1f1f] font-light text-xs rounded-[6px] stdborder pl-2", props.className)}
+                { ...props }
+                className={twMerge("h-10 w-full bg-[#1f1f1f] font-light text-xs rounded-[6px] stdborder pl-2", props.className)}
                 name="prompt"
                 autoFocus
                 autoComplete="off"
-                { ...props }
             />
         </div>
+        </>
+    )
+}
+
+interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+    children: ReactNode;
+}
+
+export const Button: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
+    return (
+        <>
+        <button
+            { ...props }
+            className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-accent hover:opacity-90", props.className)}
+        >
+            {children}
+        </button>
         </>
     )
 }

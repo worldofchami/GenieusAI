@@ -1,22 +1,20 @@
 import { API_URL } from "../layout";
-import { PromptResponse } from "./interfaces";
+import { Message, PromptResponse } from "./interfaces";
 
-export async function submitPrompt(prompt: string): Promise<PromptResponse> {
+export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
     "use server"
 
-    const messages = ["m1"].map((_) => {
-        return {
-            role: "user",
-            content: prompt,
-            name: "testuser",
-        }
-    });
-
-    if(prompt) {
+    if(chat.length > 0) {
         try {
+            // Only use last 10 messages
+            const _chat = chat.slice(
+                chat.length > 15 ? chat.length-15 : 0,
+                chat.length
+            );
+
             const response = await fetch(`${API_URL}/chat/send`, {
                 method: "POST",
-                body: `{ "messages": ${JSON.stringify(messages)} }`,
+                body: `{ "messages": ${JSON.stringify(_chat)} }`,
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -46,4 +44,8 @@ export async function submitPrompt(prompt: string): Promise<PromptResponse> {
         ok: false,
         reply: "Something went wrong... Please try again!"
     }
+}
+
+export async function signUp(formData: FormData) {
+    "use server"
 }

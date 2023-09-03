@@ -24,6 +24,18 @@
 	.rounded-xs {
 		border-radius: 8px;
 	}
+
+	.glass {
+		background: rgb(0 0 0 / 22%);
+		box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
+		backdrop-filter: blur(6.9px);
+		-webkit-backdrop-filter: blur(6.9px);
+		border: 1px solid rgb(255 255 255 / 22%);
+	}
+
+	.glass:hover {
+		background: rgb(40 40 40 / 42%);
+	}
 }
 
 * {
@@ -43,7 +55,6 @@ summary {
 
 button {
 	cursor: pointer !important;
-	border: 0;
 }
 
 ul {
@@ -68,4 +79,8 @@ a {
 
 :is(input[type="text"], input[type="email"]):invalid:not(:focus) {
 	@apply border-[#883c3c];
+}
+
+.pw_input[type="password"]:not(:placeholder-shown) {
+	@apply text-lg;
 }

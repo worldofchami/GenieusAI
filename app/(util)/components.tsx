@@ -1,6 +1,6 @@
 "use client"
 
-import { Wand2Icon } from "lucide-react"
+import { Loader2, Wand2Icon } from "lucide-react"
 import { ChangeEvent, FunctionComponent, PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { useChat } from "ai/react";
 import { PromptResponse } from "./interfaces";
@@ -40,12 +40,12 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
 }
 
 interface PromptFormProps {
-    submitPrompt: (formData: FormData) => Promise<PromptResponse>;
+    submitPrompt: (prompt: string) => Promise<PromptResponse>;
 }
 
 interface MessageBlock {
-    content: string;
-    isGenieus: boolean;
+    prompt: string;
+    reply: string;
 }
 
 export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ submitPrompt, children }) => {
@@ -53,66 +53,61 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
 
     const [prompt, setPrompt] = useState("");
 
-    const [genieusMessages, setGenieusMessages] = useState<string[]>([]);
-    const [userMessages, setUserMessages] = useState<string[]>([]);
-
     const [messageBlocks, setMessageBlocks] = useState<ReactNode[]>([]);
 
     const handleChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
         setPrompt(value);
     }
 
-    const handleSubmit = async (formData: FormData) => {
-        if(formData.get("prompt")) {
-            chatRef.current.scrollTo({
-                top: chatRef.current.scrollHeight
-            });
-    
-            addMessageBlock({
-                content: prompt,
-                isGenieus: false
-            });
-    
-            setPrompt("");
-    
-            const { ok, reply } = await submitPrompt(formData);
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async () => {
+        if(prompt) {    
+            setLoading(true);
+
+            const { ok, reply } = await submitPrompt(prompt);
             
-            addMessageBlock({
-                content: reply,
-                isGenieus: true
+            addMessageBlocks({
+                prompt,
+                reply,
             });
+
+            setPrompt("");
         }
     }
 
-    const addMessageBlock = (options: MessageBlock) => {
-        const { isGenieus, content } = options;
+    useEffect(() => {
 
-        if(isGenieus) {
-            setGenieusMessages(
-                [...genieusMessages, content]
-            );
+        chatRef.current.scrollTo({
+            top: chatRef.current.scrollHeight + 10000,
+            behavior: "smooth"
+        });
 
-            setMessageBlocks(
-                [...messageBlocks, <GenieusChatBubble>{content}</GenieusChatBubble>]
-            );
-        }
+        return () => {};
 
-        else {
-            setUserMessages(
-                [...userMessages, content]
-            );
+    }, [messageBlocks.length]);
 
-            setMessageBlocks(
-                [...messageBlocks, <UserChatBubble>{content}</UserChatBubble>]
-            );
-        }
+    const addMessageBlocks = (options: MessageBlock) => {
+        const { prompt, reply } = options;
+
+        setMessageBlocks((current) => {
+            return [...current, <UserChatBubble>{prompt}</UserChatBubble>, <GenieusChatBubble>{reply}</GenieusChatBubble>];
+        });
+
+        setLoading(false);
     }
 
     return (
         <>
-        <div className="w-fit h-full flex flex-col gap-y-2 overflow-auto pt-4 pb-2 mb-4" ref={chatRef}>
+        <div className="w-full h-full flex flex-col gap-y-2 overflow-auto pt-4 pb-2 mb-4" ref={chatRef}>
             {children}
             {messageBlocks}
+            {
+                loading &&
+                <div className="w-full h-12 flex justify-center">
+                    <Loader2 className="animate-spin" />
+                </div>
+            }
         </div>
         <form action={handleSubmit} className="h-12 flex pl-4 rounded-[6px] bg-[#2F2F2F] stdborder">
             <input

@@ -1,10 +1,8 @@
 import { API_URL } from "../layout";
 import { PromptResponse } from "./interfaces";
 
-export async function submitPrompt(formData: FormData): Promise<PromptResponse> {
+export async function submitPrompt(prompt: string): Promise<PromptResponse> {
     "use server"
-
-    const prompt = formData.get("prompt");
 
     const messages = ["m1"].map((_) => {
         return {

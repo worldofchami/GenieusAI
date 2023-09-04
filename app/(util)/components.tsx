@@ -164,12 +164,11 @@ interface TextInputProps extends DetailedHTMLProps<InputHTMLAttributes<HTMLInput
 export const TextInput: FunctionComponent<TextInputProps> = ({ label, ...props }) => {
     return (
         <>
-        <div className="w-full h-full flex flex-col gap-y-1">
+        <div className="w-full h-full flex flex-col gap-y-1 input_container" aria-label={label.toLowerCase()}>
             <label className="text-left text-xs font-light" htmlFor={`${label}-${useId()}`}>{label}</label>
             <input
                 { ...props }
-                className={twMerge("h-10 w-full bg-[#1f1f1f] font-light text-xs rounded-[6px] stdborder pl-2", props.className)}
-                name="prompt"
+                className={twMerge("h-10 w-full bg-[#1f1f1f] font-light text-xs rounded-[6px] stdborder pl-3 placeholder:text-contrast", props.className)}
                 autoFocus
                 autoComplete="off"
             />

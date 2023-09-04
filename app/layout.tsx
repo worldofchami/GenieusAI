@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Bricolage_Grotesque } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const bricolageGrotesque = Bricolage_Grotesque({
     subsets: ["latin"],
@@ -21,11 +22,21 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={bricolageGrotesque.className}>
-                <main className="w-full h-screen">
-                    <section className="w-96 h-[80vh] bg-bg px-6 pb-6 flex flex-col absolute my-auto top-0 bottom-0 right-8 rounded-lg border-[1px] border-contrast">
-                        {children}
-                    </section>
-                </main>
+                <section className="h-full w-full bg-bg px-6 pb-6 flex flex-col rounded-lg border-[1px] border-contrast">
+                    <Toaster
+                       containerClassName="relative bg-bg"
+                       containerStyle={{
+                            position: "relative",
+                       }}
+                       toastOptions={{
+                            style: {
+                                background: "rgb(60 60 60)",
+                                color: "#CDCDCD"
+                            }
+                       }}
+                    />
+                    {children}
+                </section>
             </body>
         </html>
     );

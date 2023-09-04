@@ -15,6 +15,7 @@
 
 	body {
 		color: #CDCDCD;
+		@apply mr-8 mt-8 w-96 h-[80vh] ml-auto relative;
 	}
 
 	.stdborder {
@@ -83,4 +84,19 @@ a {
 
 .pw_input[type="password"]:not(:placeholder-shown) {
 	@apply text-lg;
+}
+
+.input_container::after {
+	content: "";
+	@apply h-0 ;
+}
+
+.input_container:has(input:invalid:focus)::after {
+	content: "";
+	@apply h-0 transition-[height] duration-150 ease-in-out;
+}
+
+.input_container:has(input:invalid:not(:focus))::after {
+	content: "Please enter a valid " attr(aria-label) "!";
+	@apply h-3 pl-1 font-light text-xs text-contrastlt text-left transition-[height] duration-150 ease-in-out;
 }

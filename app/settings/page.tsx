@@ -1,3 +1,4 @@
+import { Database } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers";
 import Link from "next/link";
@@ -5,7 +6,7 @@ import { Button, LogOutButton } from "../(util)/components";
 import { API_URL } from "../layout";
 
 export default async function Page() {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = createServerComponentClient<Database>({ cookies });
 
     let username = "";
 

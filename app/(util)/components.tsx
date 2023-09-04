@@ -45,6 +45,7 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
 
 interface PromptFormProps {
     submitPrompt: (chat: Message[]) => Promise<PromptResponse>;
+    messages: Message[];
 }
 
 interface MessageBlock {
@@ -52,7 +53,7 @@ interface MessageBlock {
     reply: string;
 }
 
-export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ submitPrompt, children }) => {
+export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ messages: _messages, submitPrompt, children }) => {
     const chatRef = useCustomRef<HTMLDivElement>();
 
     const [prompt, setPrompt] = useState("");
@@ -60,10 +61,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
     const [messageBlocks, setMessageBlocks] = useState<ReactNode[]>([]);
 
     // Initial message
-    const [messages, setMessages] = useState<Message[]>([{
-        role: "system",
-        content: "You are a helpful assistant named Genieus"
-    }]);
+    const [messages, setMessages] = useState<Message[]>(_messages);
 
     const handleChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
         setPrompt(value);
@@ -82,7 +80,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             
             setMessages((curr) => ([
                 ...curr,
-            ]))
+            ]));
 
             addMessages({
                 prompt,
@@ -104,16 +102,27 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
 
     }, [messageBlocks.length]);
 
+    useEffect(() => {
+        setMessageBlocks(
+            messages.map(({ role, content }) => {
+                if(role === "user") {
+                    return <UserChatBubble>{content}</UserChatBubble>
+                }
+
+                else {
+                    return <GenieusChatBubble>{content}</GenieusChatBubble>
+                }
+            })
+        );
+
+    }, [messages]);
+
     const addMessages = (options: MessageBlock) => {
         const { prompt, reply } = options;
 
         setMessages((current) => ([
             ...current, { role: "user", content: prompt }, { role: "assistant", content: reply }
         ]));
-
-        setMessageBlocks((current) => {
-            return [...current, <UserChatBubble>{prompt}</UserChatBubble>, <GenieusChatBubble>{reply}</GenieusChatBubble>];
-        });
 
         setLoading(false);
     }

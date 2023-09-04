@@ -1,3 +1,4 @@
+import { Database, Json } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Wand2Icon } from "lucide-react";
 import { cookies } from "next/headers";
@@ -6,15 +7,39 @@ import Link from "next/link";
 import { submitPrompt } from "../(util)/actions";
 import { UserChatBubble, ChatContainer, GenieusChatBubble, Button } from "../(util)/components";
 import { EmptyChatContainer } from "../(util)/emptycomponents";
+import { Message } from "../(util)/interfaces";
 import { API_URL } from "../layout";
 
 export default async function Page() {
-    const supabase = createServerComponentClient({ cookies });
+    const supabase = createServerComponentClient<Database>({ cookies });
 
-    let username = "";
+    let email = "";
+
+    let messages: Message[] = [];
 
     try {
-        username = (await supabase.auth.getUser()).data.user?.email as string;
+        email = (await supabase.auth.getUser()).data.user?.email as string;
+
+        const { data } = await supabase
+            .from("chats")
+            .select("chat")
+            .match({ email })
+            .single();
+
+        if(!data || !("chat" in data)) return;
+
+        messages = data.chat?.map((_) => {
+            if(!_) return null;
+            const _chat = _ as { [key: string]: Json };
+            
+            return {
+                role: _chat.role,
+                content: _chat.content
+            } as Message;
+
+        }) as Message[];
+
+        console.log(messages);
     }
 
     catch(e) { console.error(e) }
@@ -22,7 +47,7 @@ export default async function Page() {
     return (
         <>
         {
-            username ?
+            email ?
             <>
             <div className="w-full h-20 flex items-center gap-x-4 border-b-[1px] border-contrast relative">
                 <div className="w-9 h-9 rounded-full">
@@ -45,7 +70,7 @@ export default async function Page() {
                     />
                 </Link>
             </div> 
-            <ChatContainer submitPrompt={submitPrompt} />
+            <ChatContainer messages={messages} submitPrompt={submitPrompt} />
             </>
             :
             <>

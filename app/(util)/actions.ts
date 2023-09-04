@@ -1,3 +1,4 @@
+import { Database } from "@/types/supabase";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { API_URL } from "../layout";
@@ -6,13 +7,31 @@ import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./
 export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
     "use server"
 
+    const supabase = createServerActionClient<Database>({ cookies });
+
+    const email = await (await supabase.auth.getUser()).data.user?.email as string;
+
     if(chat.length > 0) {
         try {
-            // Only use last 10 messages
-            const _chat = chat.slice(
-                chat.length > 15 ? chat.length-15 : 0,
+            await supabase
+                .from("messages")
+                .insert({
+                    email,
+                    role: "user",
+                    content: chat.at(-1)?.content
+                });
+
+            const _newChat = chat.slice(
+                chat.length > 14 ? chat.length-14 : 0,
                 chat.length
             );
+
+            // Only use last 15 messages
+            const _chat = [
+            {
+                role: "system",
+                content: "You are a helpful assistant named Genieus"
+            }, ..._newChat];
 
             const response = await fetch(`${API_URL}/chat/send`, {
                 method: "POST",
@@ -23,12 +42,24 @@ export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
             });
     
             const data = await response.json();
-
-            console.log(data.reply)
     
+            const { reply } = data;
+
+            await supabase
+                .from("chats")
+                .upsert({ email, chat: [..._newChat, reply] });
+
+            await supabase
+                .from("messages")
+                .insert({
+                    email,
+                    role: "assistant",
+                    content: reply
+                })
+
             return {
                 ok: true,
-                reply: data.reply
+                reply
             }
         }
 
@@ -55,7 +86,7 @@ export async function signUp(data: ISignUpForm): Promise<DBResponse> {
     const email = data.email.toLowerCase();
     const password = data.password;
 
-    const supabase = createServerActionClient({ cookies });
+    const supabase = createServerActionClient<Database>({ cookies });
 
     const { error: InsertError } = await supabase
         .from("users")
@@ -100,7 +131,7 @@ export async function login(data: ILoginForm): Promise<DBResponse> {
 
     const { email, password } = data;
 
-    const supabase = createServerActionClient({ cookies });
+    const supabase = createServerActionClient<Database>({ cookies });
 
     await supabase.auth
         .signInWithPassword({

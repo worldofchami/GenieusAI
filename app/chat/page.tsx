@@ -26,20 +26,20 @@ export default async function Page() {
             .match({ email })
             .single();
 
-        if(!data || !("chat" in data)) return;
+        if(data && "chat" in data) {
+            messages = data.chat?.map((_) => {
+                if(!_) return null;
+                const _chat = _ as { [key: string]: Json };
+                
+                if(!_chat.role || !_chat.content) return null;
 
-        messages = data.chat?.map((_) => {
-            if(!_) return null;
-            const _chat = _ as { [key: string]: Json };
-            
-            return {
-                role: _chat.role,
-                content: _chat.content
-            } as Message;
-
-        }) as Message[];
-
-        console.log(messages);
+                return {
+                    role: _chat.role,
+                    content: _chat.content
+                } as Message;
+    
+            }).filter(_ => _) as Message[];
+        }
     }
 
     catch(e) { console.error(e) }

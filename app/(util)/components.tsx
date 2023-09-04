@@ -8,15 +8,17 @@ import { useCustomRef } from "./hooks";
 import { cn } from "@/lib/utils";
 import { twMerge } from "tailwind-merge";
 
-interface ChatBubbleProps {
+export const API_URL = process.env.NODE_ENV === "production" ? "" : "http://localhost:3000/api";
+
+interface ChatBubbleProps extends HTMLProps<HTMLDivElement> {
 
 }
 
-export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildren> = ({ children }) => {
+export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildren> = ({ children, ...props }) => {
     return (
         <>
         <div
-            className="w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right"
+            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right", props.className)}
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -27,11 +29,11 @@ export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildr
 }
 
 
-export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildren> = ({ children }) => {
+export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildren> = ({ children, ...props }) => {
     return (
         <>
         <div
-            className="w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left"
+            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left", props.className)}
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -179,6 +181,7 @@ export const TextInput: FunctionComponent<TextInputProps> = ({ label, ...props }
 
 interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
     children: ReactNode;
+    secondary?: boolean;
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
@@ -186,6 +189,26 @@ export const Button: FunctionComponent<ButtonProps> = ({ children, ...props }) =
         <>
         <button
             { ...props }
+            className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-accent hover:opacity-90", props.className)}
+        >
+            {children}
+        </button>
+        </>
+    )
+}
+
+export const LogOutButton: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
+    const handleSignOut = async () => {
+        await fetch(`${API_URL}/auth/signout`, {
+            method: "POST"
+        });
+    }
+
+    return (
+        <>
+        <button
+            { ...props }
+            onClick={handleSignOut}
             className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-accent hover:opacity-90", props.className)}
         >
             {children}

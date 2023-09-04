@@ -14,6 +14,11 @@ export interface ISignUpForm {
     password: string;
 }
 
+export interface ILoginForm {
+    email: string;
+    password: string;
+}
+
 export interface DBResponse {
     ok: boolean;
     message: string;

@@ -31,7 +31,8 @@ export default function RootLayout({
                        toastOptions={{
                             style: {
                                 background: "rgb(60 60 60)",
-                                color: "#CDCDCD"
+                                color: "#CDCDCD",
+                                textAlign: "center"
                             }
                        }}
                     />

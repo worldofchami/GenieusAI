@@ -2,17 +2,17 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, FunctionComponent, useState } from "react"
+import { FunctionComponent, useState } from "react"
 import { toast } from "react-hot-toast";
-import { Button, TextInput } from "../(util)/components"
-import { DBResponse, ISignUpForm } from "../(util)/interfaces";
-import { PasswordPattern, PasswordRegExp, UsernamePattern, UsernameRegExp } from "../(util)/RegExp";
+import { Button, TextInput } from "../(util)/components";
+import { DBResponse, ILoginForm } from "../(util)/interfaces"
+import { PasswordPattern, PasswordRegExp } from "../(util)/RegExp";
 
-interface SignUpFormProps {
-    signUp: (data: ISignUpForm) => Promise<DBResponse>;
+interface LoginFormProps {
+    login: (data: ILoginForm) => Promise<DBResponse>;
 }
 
-export const SignUpForm: FunctionComponent<SignUpFormProps> = ({ signUp }) => {
+export const LoginForm: FunctionComponent<LoginFormProps> = ({ login }) => {
     const [passwordType, setPasswordType] = useState("password");
 
     const handleTogglePassword = () => {
@@ -23,26 +23,24 @@ export const SignUpForm: FunctionComponent<SignUpFormProps> = ({ signUp }) => {
     const router = useRouter();
 
     const handleSubmit = async (formData: FormData) => {
-        const username = formData.get("username")?.toString();
         const password = formData.get("password")?.toString();
         const email = formData.get("email")?.toString();
 
-        if(!username || !password || !email) {
+        if(!password || !email) {
             toast.error("Please fill in all the fields!");
             return;
         }
 
-        if(UsernameRegExp.test(username) && PasswordRegExp.test(password)) {
+        if(PasswordRegExp.test(password)) {
             const data = {
-                username,
                 password,
                 email
             };
 
             const { ok, message } = await toast.promise<DBResponse>(
-                signUp(data),
+                login(data),
                 {
-                    loading: "Signing you up...",
+                    loading: "Logging in...",
                     success: "",
                     error: "Critical error! Please contact support."
                 },
@@ -64,10 +62,6 @@ export const SignUpForm: FunctionComponent<SignUpFormProps> = ({ signUp }) => {
             else {
                 toast.error(message);
             }
-        }
-
-        else if(!UsernameRegExp.test(username)) {
-            toast.error("Please enter a valid username!");
         }
 
         else if(!PasswordRegExp.test(password)) {
@@ -92,12 +86,6 @@ export const SignUpForm: FunctionComponent<SignUpFormProps> = ({ signUp }) => {
             <div className="text-center">
                 <span className="font-light text-sm text-contrastlt">━━━━━━━ or ━━━━━━━━</span>
             </div>
-            <TextInput
-                label="Username"
-                placeholder="johnmckenzie"
-                pattern={UsernamePattern}
-                name="username"
-            />
             <TextInput
                 label="Email"
                 type="email"
@@ -126,7 +114,7 @@ export const SignUpForm: FunctionComponent<SignUpFormProps> = ({ signUp }) => {
                 </div>
             </div>
             <Button type="submit" className="mt-2">
-                Sign Up
+                Login
             </Button>
         </form>
         </>

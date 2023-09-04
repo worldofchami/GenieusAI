@@ -1,25 +1,81 @@
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Wand2Icon } from "lucide-react";
+import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { submitPrompt } from "../(util)/actions";
-import { UserChatBubble, ChatContainer, GenieusChatBubble } from "../(util)/components";
+import { UserChatBubble, ChatContainer, GenieusChatBubble, Button } from "../(util)/components";
+import { EmptyChatContainer } from "../(util)/emptycomponents";
 import { API_URL } from "../layout";
 
 export default async function Page() {
+    const supabase = createServerComponentClient({ cookies });
+
+    let username = "";
+
+    try {
+        username = (await supabase.auth.getUser()).data.user?.email as string;
+    }
+
+    catch(e) { console.error(e) }
+
     return (
         <>
-        <div className="w-full h-20 flex items-center gap-x-4 border-b-[1px] border-contrast relative">
-            <div className="w-9 h-9 rounded-full">
-                <Image
-                    src="/images/genieus.jpeg"
-                    alt="Picture of Genieus"
-                    width={36}
-                    height={36}
-                    className="w-full h-full rounded-full"
-                />
+        {
+            username ?
+            <>
+            <div className="w-full h-20 flex items-center gap-x-4 border-b-[1px] border-contrast relative">
+                <div className="w-9 h-9 rounded-full">
+                    <Image
+                        src="/images/genieus.jpeg"
+                        alt="Picture of Genieus"
+                        width={36}
+                        height={36}
+                        className="w-full h-full rounded-full"
+                    />
+                </div>
+                <h1>Genieus AI</h1>
+                <Link href="/settings">
+                    <Image
+                        src="/icons/cog.svg"
+                        alt="Your Settings"
+                        width={20}
+                        height={20}
+                        className="w-5 h-5 absolute right-0 my-auto top-0 bottom-0"
+                    />
+                </Link>
+            </div> 
+            <ChatContainer submitPrompt={submitPrompt} />
+            </>
+            :
+            <>
+            <div className="w-full h-full absolute top-0 left-0 flex flex-col items-center justify-center rounded-sm stdborder bg-bg bg-opacity-[.85] z-10">
+                <span className="text-sm font-light">You're not logged in!</span>
+                <span className="text-xs text-contrastlt mb-4">Login to receive assistance.</span>
+                <div className="flex gap-x-2">
+                    <Link href="/login">
+                        <Button>
+                            Login
+                        </Button>
+                    </Link>
+                    <Link href="/signup">
+                        <Button className="glass bg-transparent">
+                            Sign Up
+                        </Button>
+                    </Link>
+                </div>
             </div>
-            <h1>Genieus AI</h1>
-            <Link href="/settings">
+            <div className="w-full h-20 flex items-center gap-x-4 border-b-[1px] border-contrast relative">
+                <div className="w-9 h-9 rounded-full">
+                    <Image
+                        src="/images/genieus.jpeg"
+                        alt="Picture of Genieus"
+                        width={36}
+                        height={36}
+                        className="w-full h-full rounded-full"
+                    />
+                </div>
+                <h1>Genieus AI</h1>
                 <Image
                     src="/icons/cog.svg"
                     alt="Your Settings"
@@ -27,46 +83,11 @@ export default async function Page() {
                     height={20}
                     className="w-5 h-5 absolute right-0 my-auto top-0 bottom-0"
                 />
-            </Link>
-        </div>
-        <ChatContainer submitPrompt={submitPrompt}>
-            {/* <UserChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </UserChatBubble>
-            <UserChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </UserChatBubble>
-            <GenieusChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </GenieusChatBubble>
-            <GenieusChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </GenieusChatBubble>
-            <UserChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </UserChatBubble>
-            <UserChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </UserChatBubble>
-            <GenieusChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </GenieusChatBubble>
-            <GenieusChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </GenieusChatBubble>
-            <UserChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </UserChatBubble>
-            <UserChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </UserChatBubble>
-            <GenieusChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </GenieusChatBubble>
-            <GenieusChatBubble>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </GenieusChatBubble> */}
-        </ChatContainer>
+            </div>
+            <EmptyChatContainer />
+            </>
+
+        }
         </>
     )
 }

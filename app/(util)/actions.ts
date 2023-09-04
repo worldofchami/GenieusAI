@@ -1,7 +1,7 @@
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { API_URL } from "../layout";
-import { DBResponse, ISignUpForm, Message, PromptResponse } from "./interfaces";
+import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./interfaces";
 
 export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
     "use server"
@@ -92,5 +92,24 @@ export async function signUp(data: ISignUpForm): Promise<DBResponse> {
     return {
         ok: true,
         message: `Welcome to GenieusAI, ${username}!`
+    }
+}
+
+export async function login(data: ILoginForm): Promise<DBResponse> {
+    "use server"
+
+    const { email, password } = data;
+
+    const supabase = createServerActionClient({ cookies });
+
+    await supabase.auth
+        .signInWithPassword({
+            email,
+            password
+        });
+
+    return {
+        ok: true,
+        message: `Welcome back!`
     }
 }

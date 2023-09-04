@@ -3,6 +3,9 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button } from "../(util)/components";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function Page() {
     return (
         <>

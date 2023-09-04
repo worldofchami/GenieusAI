@@ -10,6 +10,8 @@ import { EmptyChatContainer } from "../(util)/emptycomponents";
 import { Message } from "../(util)/interfaces";
 import { API_URL } from "../layout";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
     const supabase = createServerComponentClient<Database>({ cookies });
 

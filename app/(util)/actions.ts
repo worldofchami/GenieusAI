@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { API_URL } from "../layout";
 import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./interfaces";
 
+export const dynamic = "force-dynamic";
+
 export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
     "use server"
 

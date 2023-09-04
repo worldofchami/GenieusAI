@@ -9,13 +9,14 @@
 
 @layer base {
 	html {
-		background: black;
+		background: rgb(20 20 20);
 		scrollbar-width: 0 !important;
 	}
 
 	body {
 		color: #CDCDCD;
-		@apply mr-8 mt-8 w-96 h-[80vh] ml-auto relative;
+		@apply w-96 h-[580px] relative;
+		/* @apply w-96 h-[80vh] ml-auto relative; */
 	}
 
 	.stdborder {

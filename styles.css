@@ -1,0 +1,27 @@
+:root {
+	color-scheme: dark;
+	--radius: 14px;
+}
+
+html {
+    background: rgb(20 20 20);
+}
+
+body {
+    overflow: hidden;
+    scrollbar-width: 0 !important;
+    background: rgb(20 20 20);
+}
+
+::-webkit-scrollbar {
+	display: none !important;
+}
+
+.frame_container {
+    width: fit-content;
+    height: fit-content;
+}
+
+iframe {
+    background: rgb(20 20 20);
+}

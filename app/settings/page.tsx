@@ -31,11 +31,11 @@ export default async function Page() {
                             Back to Chat
                         </Button>
                     </Link>
-                    <Link href="/signout">
+                    <a href="/signout">
                         <LogOutButton className="glass bg-transparent">
                             Sign Out
                         </LogOutButton>
-                    </Link>
+                    </a>
                 </div>
                 <span className="mt-4 text-sm font-light text-contrastlt">Got a question? <a href="mailto:tinochaminuka@gmail.com" className="underline">Email us</a></span>
             </div>

@@ -18,6 +18,12 @@ export default async function Page() {
 
     catch(e) { console.error(e) }
 
+    const signUserOut = async () => {
+        await fetch(`${API_URL}/auth/signout`, {
+            method: "POST"
+        });
+    }
+
     return (
         <>
         <div className="w-full h-full flex flex-col items-center justify-center">
@@ -31,11 +37,11 @@ export default async function Page() {
                             Back to Chat
                         </Button>
                     </Link>
-                    <a href="/api/auth/signout">
+                    <div>
                         <LogOutButton className="glass bg-transparent">
                             Sign Out
                         </LogOutButton>
-                    </a>
+                    </div>
                 </div>
                 <span className="mt-4 text-sm font-light text-contrastlt">Got a question? <a href="mailto:tinochaminuka@gmail.com" className="underline">Email us</a></span>
             </div>

@@ -20,7 +20,7 @@ export default async function Page() {
     let messages: Message[] = [];
 
     try {
-        email = (await supabase.auth.getUser()).data.user?.email as string;
+        email = (await supabase.auth.getSession()).data.session?.user.email as string;
 
         const { data } = await supabase
             .from("chats")

@@ -49,7 +49,16 @@ export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
 
             await supabase
                 .from("chats")
-                .upsert({ email, chat: [..._newChat, reply] });
+                .upsert({
+                    email,
+                    chat: [
+                        ..._newChat,
+                        {
+                            role: "assistant",
+                            content: reply
+                        }
+                    ]
+                });
 
             await supabase
                 .from("messages")

@@ -31,7 +31,7 @@ export default async function Page() {
                             Back to Chat
                         </Button>
                     </Link>
-                    <a href="/signout">
+                    <a href="/api/auth/signout">
                         <LogOutButton className="glass bg-transparent">
                             Sign Out
                         </LogOutButton>

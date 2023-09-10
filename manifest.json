@@ -4,7 +4,13 @@
 	"short_name": "GenieusAI",
 	"version": "0.0.1",
 	"description": "Your personal chatbot",
-	"permissions": ["activeTab"],
+	"host_permissions": [
+		"*://*.genieusai.vercel.app/"
+	],
+	"permissions": [
+		"activeTab",
+		"cookies"
+	],
 	"action": {
 	  "default_popup": "extension.html"
 	}

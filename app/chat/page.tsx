@@ -22,26 +22,28 @@ export default async function Page() {
     try {
         email = (await supabase.auth.getSession()).data.session?.user.email as string;
 
-        const { data } = await supabase
-            .from("chats")
-            .select("chat")
-            .match({ email })
-            .single();
+        /* LOADS PREVIOUS CHATS */
 
-        if(data && "chat" in data) {
-            messages = data.chat?.map((_) => {
-                if(!_) return null;
-                const _chat = _ as { [key: string]: Json };
+        // const { data } = await supabase
+        //     .from("chats")
+        //     .select("chat")
+        //     .match({ email })
+        //     .single();
+
+        // if(data && "chat" in data) {
+        //     messages = data.chat?.map((_) => {
+        //         if(!_) return null;
+        //         const _chat = _ as { [key: string]: Json };
                 
-                if(!_chat.role || !_chat.content) return null;
+        //         if(!_chat.role || !_chat.content) return null;
 
-                return {
-                    role: _chat.role,
-                    content: _chat.content
-                } as Message;
+        //         return {
+        //             role: _chat.role,
+        //             content: _chat.content
+        //         } as Message;
     
-            }).filter(_ => _) as Message[];
-        }
+        //     }).filter(_ => _) as Message[];
+        // }
     }
 
     catch(e) { console.error(e) }
@@ -113,7 +115,6 @@ export default async function Page() {
             </div>
             <EmptyChatContainer />
             </>
-
         }
         </>
     )

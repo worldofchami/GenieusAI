@@ -15,29 +15,25 @@ export async function POST(req: Request) {
 
     const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo",
-        stream: false,
+        stream: true,
         messages,
     });
 
-    const data = await response.json();
+    // const data = await response.json();
 
-    /*
     const stream = OpenAIStream(response, {
-        onStart: async () => {
-          await savePromptToDatabase(prompt)
-        },
-        onToken: async (token: string) => {
-          // This callback is called for each token in the stream
-          // You can use this to debug the stream or save the tokens to your database
-          console.log(token)
-        },
-        onCompletion: async (completion: string) => {
-          await saveCompletionToDatabase(completion)
-        }
+        // onStart: async () => {
+        //   await savePromptToDatabase(prompt)
+        // },
+        // onToken: async (token: string) => {
+        //   // This callback is called for each token in the stream
+        //   // You can use this to debug the stream or save the tokens to your database
+        //   console.log(token)
+        // },
+        // onCompletion: async (completion: string) => {
+        //   await saveCompletionToDatabase(completion)
+        // }
     });
-    */
 
-    return NextResponse.json({
-        reply: data.choices[0].message.content
-    }) //new StreamingTextResponse(stream);
+    return new StreamingTextResponse(stream);
 }

@@ -1,5 +1,6 @@
 import { Database } from "@/types/supabase";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { StreamingTextResponse } from "ai";
 import { cookies } from "next/headers";
 import { API_URL } from "../layout";
 import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./interfaces";
@@ -35,7 +36,7 @@ export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
                 content: "You are a helpful assistant named Genieus"
             }, ..._newChat];
 
-            const response = await fetch(`${API_URL}/chat/send`, {
+            const response: StreamingTextResponse = await fetch(`${API_URL}/chat/send`, {
                 method: "POST",
                 body: `{ "messages": ${JSON.stringify(_chat)} }`,
                 headers: {

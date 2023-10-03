@@ -1,12 +1,13 @@
 "use client"
 
 import { Loader2, Wand2Icon } from "lucide-react"
-import { ButtonHTMLAttributes, ChangeEvent, DetailedHTMLProps, FunctionComponent, HTMLProps, InputHTMLAttributes, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
+import { ButtonHTMLAttributes, ChangeEvent, DetailedHTMLProps, FormEvent, FunctionComponent, HTMLProps, InputHTMLAttributes, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
 import { useChat } from "ai/react";
 import { Message, PromptResponse } from "./interfaces";
 import { useCustomRef } from "./hooks";
 import { cn } from "@/lib/utils";
 import { twMerge } from "tailwind-merge";
+import { useRouter } from "next/navigation";
 
 export const API_URL = process.env.NODE_ENV === "production" ? "" : "http://localhost:3000/api";
 
@@ -56,29 +57,29 @@ interface MessageBlock {
 export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ messages: _messages, submitPrompt, children }) => {
     const chatRef = useCustomRef<HTMLDivElement>();
 
-    const [prompt, setPrompt] = useState("");
+    const { messages, input: prompt, handleInputChange, handleSubmit: sendChat } = useChat({
+        api: "/api/chat/send"
+    });
 
     const [messageBlocks, setMessageBlocks] = useState<ReactNode[]>([]);
 
     // Initial message
-    const [messages, setMessages] = useState<Message[]>(_messages);
-
-    const handleChange = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
-        setPrompt(value);
-    }
+    const [chatMessages, setChatMessages] = useState<Message[]>(_messages);
 
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async () => {
-        if(prompt) {    
+    const handleSubmit = async (ev: FormEvent<HTMLFormElement>) => {
+        if(prompt) {
+            sendChat(ev);
+
             setLoading(true);
 
-            const { ok, reply } = await submitPrompt([...messages, {
+            const { ok, reply } = await submitPrompt([...chatMessages, {
                 role: "user",
                 content: prompt
             }]);
             
-            setMessages((curr) => ([
+            setChatMessages((curr) => ([
                 ...curr,
             ]));
 
@@ -86,8 +87,6 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
                 prompt,
                 reply,
             });
-
-            setPrompt("");
         }
     }
 
@@ -120,13 +119,13 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
     const addMessages = (options: MessageBlock) => {
         const { prompt, reply } = options;
 
-        setMessages((current) => ([
+        setChatMessages((current) => ([
             ...current, { role: "user", content: prompt }, { role: "assistant", content: reply }
         ]));
 
         setLoading(false);
     }
-
+    
     return (
         <>
         <div className="w-full h-full flex flex-col gap-y-2 overflow-auto pt-4 pb-2 mb-4" ref={chatRef}>
@@ -146,7 +145,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
                 </div>
             }
         </div>
-        <form action={handleSubmit} className="h-12 flex pl-4 rounded-[6px] bg-[#2F2F2F] stdborder">
+        <form onSubmit={handleSubmit} className="h-12 flex pl-4 rounded-[6px] bg-[#2F2F2F] stdborder">
             <input
                 type="text"
                 placeholder="Ask me anything..."
@@ -154,7 +153,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
                 name="prompt"
                 autoFocus
                 value={prompt}
-                onChange={handleChange}
+                onChange={handleInputChange}
                 autoComplete="off"
             />
             <button
@@ -207,10 +206,15 @@ export const Button: FunctionComponent<ButtonProps> = ({ children, ...props }) =
 }
 
 export const LogOutButton: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
+    const router = useRouter();
+
     const handleSignOut = async () => {
         await fetch(`${API_URL}/auth/signout`, {
             method: "POST"
         });
+
+        router.push("/signout");
+        router.refresh();
     }
 
     return (

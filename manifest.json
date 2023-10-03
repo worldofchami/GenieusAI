@@ -5,7 +5,8 @@
 	"version": "0.0.1",
 	"description": "Your personal chatbot",
 	"host_permissions": [
-		"*://*.genieusai.vercel.app/"
+		"*://*.genieusai.vercel.app/",
+		"*://localhost:3000/"
 	],
 	"permissions": [
 		"activeTab",
@@ -13,5 +14,11 @@
 	],
 	"action": {
 	  "default_popup": "extension.html"
-	}
+	},
+	"content_scripts": [
+		{
+		  "matches": ["*://*.genieusai.vercel.app/"],
+		  "js": ["script.js"]
+		}
+	  ]
   }

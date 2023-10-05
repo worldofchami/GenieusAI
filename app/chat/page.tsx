@@ -24,26 +24,26 @@ export default async function Page() {
 
         /* LOADS PREVIOUS CHATS */
 
-        // const { data } = await supabase
-        //     .from("chats")
-        //     .select("chat")
-        //     .match({ email })
-        //     .single();
+        const { data } = await supabase
+            .from("chats")
+            .select("chat")
+            .match({ email })
+            .single();
 
-        // if(data && "chat" in data) {
-        //     messages = data.chat?.map((_) => {
-        //         if(!_) return null;
-        //         const _chat = _ as { [key: string]: Json };
+        if(data && "chat" in data) {
+            messages = data.chat?.map((_) => {
+                if(!_) return null;
+                const _chat = _ as { [key: string]: Json };
                 
-        //         if(!_chat.role || !_chat.content) return null;
+                if(!_chat.role || !_chat.content) return null;
 
-        //         return {
-        //             role: _chat.role,
-        //             content: _chat.content
-        //         } as Message;
+                return {
+                    role: _chat.role,
+                    content: _chat.content
+                } as Message;
     
-        //     }).filter(_ => _) as Message[];
-        // }
+            }).filter(_ => _) as Message[];
+        }
     }
 
     catch(e) { console.error(e) }

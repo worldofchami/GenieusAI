@@ -15,8 +15,8 @@
 
 	body {
 		color: #CDCDCD;
-		@apply w-96 h-[580px] relative;
-		/* @apply w-96 h-[80vh] ml-auto relative; */
+		/* @apply w-96 h-[580px] relative; */
+		@apply w-[500px] max-w-full h-screen mx-auto relative;
 	}
 
 	.stdborder {
@@ -98,6 +98,6 @@ a {
 }
 
 .input_container:has(input:invalid:not(:focus))::after {
-	content: "Please enter a valid " attr(aria-label) "!";
+	content: "Please enter a valid " attr(data-label) "!";
 	@apply h-3 pl-1 font-light text-xs text-contrastlt text-left transition-[height] duration-150 ease-in-out;
 }

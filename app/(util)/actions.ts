@@ -10,35 +10,17 @@ export const dynamic = "force-dynamic";
 export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
     "use server"
 
-    const supabase = createServerActionClient<Database>({ cookies });
-
-    const email = await (await supabase.auth.getUser()).data.user?.email as string;
-
     if(chat.length > 0) {
         try {
-            await supabase
-                .from("messages")
-                .insert({
-                    email,
-                    role: "user",
-                    content: chat.at(-1)?.content
-                });
-
-            const _newChat = chat.slice(
-                chat.length > 14 ? chat.length-14 : 0,
-                chat.length
-            );
-
             // Only use last 15 messages
-            const _chat = [
-            {
-                role: "system",
-                content: "You are a helpful assistant named Genieus"
-            }, ..._newChat];
+            const newChat = chat.slice(-15);
+
+            const supabase = createServerActionClient<Database>({ cookies });
+            const email = await (await supabase.auth.getSession()).data.session?.user.email;
 
             const response: StreamingTextResponse = await fetch(`${API_URL}/chat/send`, {
                 method: "POST",
-                body: `{ "messages": ${JSON.stringify(_chat)} }`,
+                body: `{ "messages": ${JSON.stringify(newChat)}, "email": "${email}")} }`,
                 headers: {
                     "Content-Type": "application/json",
                 }
@@ -48,36 +30,13 @@ export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
     
             const { reply } = data;
 
-            await supabase
-                .from("chats")
-                .upsert({
-                    email,
-                    chat: [
-                        ..._newChat,
-                        {
-                            role: "assistant",
-                            content: reply
-                        }
-                    ]
-                });
-
-            await supabase
-                .from("messages")
-                .insert({
-                    email,
-                    role: "assistant",
-                    content: reply
-                })
-
             return {
                 ok: true,
                 reply
             }
         }
 
-        catch(e) {
-            console.log(e);
-            
+        catch(e) {            
             return {
                 ok: false,
                 reply: "Something went wrong... Please try again!"

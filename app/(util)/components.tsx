@@ -1,7 +1,7 @@
 "use client"
 
 import { Loader2, Wand2Icon } from "lucide-react"
-import { ButtonHTMLAttributes, ChangeEvent, DetailedHTMLProps, FormEvent, FunctionComponent, HTMLProps, InputHTMLAttributes, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
+import { ButtonHTMLAttributes, DetailedHTMLProps, FormEvent, FunctionComponent, HTMLProps, InputHTMLAttributes, PropsWithChildren, ReactNode, useEffect, useId, useState } from "react";
 import { useChat } from "ai/react";
 import { Message, PromptResponse } from "./interfaces";
 import { useCustomRef } from "./hooks";
@@ -49,11 +49,6 @@ interface PromptFormProps {
     messages: Message[];
 }
 
-interface MessageBlock {
-    prompt: string;
-    reply: string;
-}
-
 export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ messages: prevMessages, submitPrompt, children }) => {
     const chatRef = useCustomRef<HTMLDivElement>();
 
@@ -67,7 +62,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
     });
 
     const handleSubmit = async (ev: FormEvent<HTMLFormElement>) => {
-        if(prompt) {
+        if(prompt && !isLoading) {
             sendChat(ev);
         }
     }

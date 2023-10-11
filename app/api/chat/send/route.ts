@@ -52,18 +52,31 @@ export async function POST(req: Request) {
                     content: completion
                 });
 
-            // Store current chat into DB
+            // Fetch current chat
+            const res = await supabase
+                .from("chats")
+                .select("chat")
+                .match({ email });
+
+            const currentChat = res.data?.[0].chat!;
+
+            // Store new chat
             await supabase
                 .from("chats")
                 .update({
                     chat: [
-                        ...messages,
+                        ...currentChat,
+                        {
+                            role: "user",
+                            content: messages.at(-1)?.content
+                        },
                         {
                             role: "assistant",
                             content: completion
                         }
                     ]
-                }).match({ email });
+                })
+                .match({ email });
         }
     });
 

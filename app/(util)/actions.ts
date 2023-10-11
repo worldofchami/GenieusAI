@@ -91,6 +91,14 @@ export async function signUp(data: ISignUpForm): Promise<DBResponse> {
         }
     }
 
+    // Create blank chat entry for user
+    await supabase
+        .from("chats")
+        .insert({
+            email,
+            chat: []
+        });
+
     return {
         ok: true,
         message: `Welcome to GenieusAI, ${username}!`

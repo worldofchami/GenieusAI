@@ -1,14 +1,12 @@
 import { Database, Json } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Wand2Icon } from "lucide-react";
 import { cookies } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { submitPrompt } from "../(util)/actions";
-import { UserChatBubble, ChatContainer, GenieusChatBubble, Button } from "../(util)/components";
+import { ChatContainer, Button } from "../(util)/components";
 import { EmptyChatContainer } from "../(util)/emptycomponents";
 import { Message } from "../(util)/interfaces";
-import { API_URL } from "../layout";
 
 export const dynamic = "force-dynamic";
 
@@ -21,8 +19,6 @@ export default async function Page() {
 
     try {
         email = (await supabase.auth.getSession()).data.session?.user.email as string;
-
-        /* LOADS PREVIOUS CHATS */
 
         const { data } = await supabase
             .from("chats")
@@ -40,8 +36,7 @@ export default async function Page() {
                 return {
                     role: _chat.role,
                     content: _chat.content
-                } as Message;
-    
+                };
             }).filter(_ => _) as Message[];
         }
     }

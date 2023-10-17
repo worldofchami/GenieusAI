@@ -6,7 +6,7 @@
 	"description": "Your personal chatbot",
 	"host_permissions": [
 		"*://*.genieusai.vercel.app/",
-		"*://localhost:3000/"
+		"http://localhost:3000/"
 	],
 	"permissions": [
 		"activeTab",
@@ -17,7 +17,7 @@
 	},
 	"content_scripts": [
 		{
-		  "matches": ["*://*.genieusai.vercel.app/"],
+		  "matches": ["*://*.genieusai.vercel.app/", "http://localhost:3000/"],
 		  "js": ["script.js"]
 		}
 	  ]

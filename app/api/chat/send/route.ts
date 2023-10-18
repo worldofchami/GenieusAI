@@ -3,14 +3,13 @@ import { Database } from "@/types/supabase";
 import { createRouteHandlerClient, User } from "@supabase/auth-helpers-nextjs";
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import { Configuration, OpenAIApi } from "openai-edge";
+import OpenAI from "openai";
 
-const config = new Configuration({
+const config = ({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-const openai = new OpenAIApi(config);
+const openai = new OpenAI(config);
 
 export const runtime = "edge";
 
@@ -26,7 +25,7 @@ export async function POST(req: Request) {
     const supabase = createRouteHandlerClient<Database>({ cookies });
     const email = await (await supabase.auth.getSession()).data.session?.user.email!;
 
-    const response = await openai.createChatCompletion({
+    const response = await openai.chat.completions.create({
         model: "gpt-4",
         stream: true,
         messages: [configMessage, ...messages],
@@ -76,7 +75,9 @@ export async function POST(req: Request) {
                         }
                     ]
                 })
-                .match({ email });
+                .match({
+                    email
+                });
         }
     });
 

@@ -19,7 +19,7 @@ export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildr
     return (
         <>
         <div
-            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right", props.className)}
+            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right break-all", props.className)}
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -34,7 +34,7 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
     return (
         <>
         <div
-            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left", props.className)}
+            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left break-all", props.className)}
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}

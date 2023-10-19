@@ -16,7 +16,7 @@
 	body {
 		color: #CDCDCD;
 		/* @apply w-96 h-[580px] relative; */
-		@apply w-[500px] max-w-full h-screen mx-auto relative;
+		@apply w-[500px] max-w-full h-[100dvh] mx-auto relative;
 	}
 
 	.stdborder {

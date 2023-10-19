@@ -83,6 +83,10 @@ a {
 	@apply border-[#883c3c];
 }
 
+:is(input[type="text"], input[type="email"]):focus {
+	@apply max-sm:text-lg;
+}
+
 .pw_input[type="password"]:not(:placeholder-shown) {
 	@apply text-lg;
 }

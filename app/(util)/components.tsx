@@ -65,8 +65,20 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
     });
 
     const handleSubmit = async (ev: FormEvent<HTMLFormElement>) => {
-        if(prompt && !isLoading) {
+        // Another response being generated; had to put this here because it only works this way
+        // For some weird reason
+        if(isLoading) {
+            toast.error("Genieus is busy! Please give him a few moments...");
+            return;
+        }
+        
+        if(prompt) {
             sendChat(ev);
+        }
+
+        // Not loading, but no prompt entered
+        else {
+            toast.error("Please enter a prompt!");
         }
     }
 
@@ -123,6 +135,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             <button
                 type="submit"
                 className="w-12 h-12 grid place-content-center cursor-pointer hover:opacity-80"
+                disabled={isLoading}
             >
                 <Wand2Icon width={18} height={18} />
             </button>
@@ -195,7 +208,21 @@ export const LogOutButton: FunctionComponent<ButtonProps> = ({ children, ...prop
 
 export const ClearChatButton: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
     const handleClearChat = async () => {
-        const { ok, message } = await clearChat();
+        const { ok, message } = await toast.promise(
+            clearChat(),
+            {
+                loading: "Clearing your chats...",
+                success: "",
+                error: "Something went wrong... Please try again!"
+            },
+            {
+                success: {
+                    style: {
+                        display: "none"
+                    }
+                }
+            }
+        );
 
         if(ok) {
             toast.success(message);

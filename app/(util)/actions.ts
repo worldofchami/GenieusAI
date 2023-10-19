@@ -3,6 +3,7 @@
 import { Database } from "@/types/supabase";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { StreamingTextResponse } from "ai";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { API_URL } from "../layout";
 import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./interfaces";
@@ -137,6 +138,8 @@ export async function clearChat(): Promise<DBResponse> {
         }
     }
     
+    revalidatePath("/chat");
+
     return {
         ok: true,
         message: "Successfully cleared your chats!"

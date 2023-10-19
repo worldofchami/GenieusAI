@@ -15,7 +15,7 @@ export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
             const newChat = chat.slice(-15);
 
             const supabase = createServerActionClient<Database>({ cookies });
-            const email = await (await supabase.auth.getSession()).data.session?.user.email;
+            const email = await (await supabase.auth.getSession()).data.session?.user.email || "anon";
 
             const response: StreamingTextResponse = await fetch(`${API_URL}/chat/send`, {
                 method: "POST",

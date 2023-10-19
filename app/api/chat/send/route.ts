@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     };
 
     const supabase = createRouteHandlerClient<Database>({ cookies });
-    const email = await (await supabase.auth.getSession()).data.session?.user.email!;
+    const email = await (await supabase.auth.getSession()).data.session?.user.email || "anon";
 
     const response = await openai.chat.completions.create({
         model: "gpt-4",
@@ -51,6 +51,8 @@ export async function POST(req: Request) {
                     content: completion
                 });
 
+            // Anonymous user, don't store chat
+            if(email === "anon") return;
             // Fetch current chat
             const res = await supabase
                 .from("chats")

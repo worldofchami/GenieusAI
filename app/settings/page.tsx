@@ -43,21 +43,28 @@ export default async function Page() {
             </div>
             :
             <>
-            <span className="text-sm font-light">You're not logged in!</span>
-            <span className="text-xs text-contrastlt mb-4">Login to receive assistance.</span>
-            <div className="flex gap-x-2">
-                <Link href="/login">
-                    <Button>
-                        Login
-                    </Button>
-                </Link>
-                <Link href="/signup">
-                    <Button className="glass bg-transparent">
-                        Sign Up
-                    </Button>
-                </Link>
+            <div className="flex flex-col items-center">
+                <span className="text-sm font-light">You're not logged in!</span>
+                <span className="text-xs text-contrastlt mb-4">Login to see all your messages.</span>
+                <div className="flex flex-col items-center gap-y-4">
+                    <Link href="/chat">
+                        <Button>
+                            Back to Chat
+                        </Button>
+                    </Link>
+                    <Link href="/login">
+                        <Button className="bg-secAccent">
+                            Login
+                        </Button>
+                    </Link>
+                    <Link href="/">
+                        <Button className="glass bg-transparent">
+                            Home
+                        </Button>
+                    </Link>
+                </div>
+                <span className="mt-4 text-sm font-light text-contrastlt">Got a question? <a href="mailto:tinochaminuka@gmail.com" className="underline">Email us</a></span>
             </div>
-            <span className="text-sm font-light">Got a question? <a href="mailto:tinochaminuka@gmail.com" className="underline">Email us</a></span>
             </>   
         }
         </div>

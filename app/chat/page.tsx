@@ -65,7 +65,7 @@ export default async function Page() {
                         alt="Home"
                         width={30}
                         height={30}
-                        className="w-7 h-7 absolute right-8 my-auto top-0 bottom-0"
+                        className="w-7 h-7 absolute right-8 my-auto top-0 bottom-0 hover:opacity-80"
                     />
                 </Link>
                 <Link href="/settings">
@@ -74,7 +74,7 @@ export default async function Page() {
                         alt="Your Settings"
                         width={20}
                         height={20}
-                        className="w-5 h-5 absolute right-0 my-auto top-0 bottom-0"
+                        className="w-5 h-5 absolute right-0 my-auto top-0 bottom-0 hover:opacity-80"
                     />
                 </Link>
             </div> 

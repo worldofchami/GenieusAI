@@ -1,3 +1,5 @@
+"use server"
+
 import { Database } from "@/types/supabase";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { StreamingTextResponse } from "ai";
@@ -5,11 +7,7 @@ import { cookies } from "next/headers";
 import { API_URL } from "../layout";
 import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./interfaces";
 
-export const dynamic = "force-dynamic";
-
 export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
-    "use server"
-
     if(chat.length > 0) {
         try {
             // Only use last 15 messages
@@ -51,8 +49,6 @@ export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
 }
 
 export async function signUp(data: ISignUpForm): Promise<DBResponse> {
-    "use server"
-
     const username = data.username.toLowerCase();
     const email = data.email.toLowerCase();
     const password = data.password;
@@ -106,8 +102,6 @@ export async function signUp(data: ISignUpForm): Promise<DBResponse> {
 }
 
 export async function login(data: ILoginForm): Promise<DBResponse> {
-    "use server"
-
     const { email, password } = data;
 
     const supabase = createServerActionClient<Database>({ cookies });
@@ -121,5 +115,30 @@ export async function login(data: ILoginForm): Promise<DBResponse> {
     return {
         ok: true,
         message: `Welcome back!`
+    }
+}
+
+export async function clearChat(): Promise<DBResponse> {
+    const supabase = createServerActionClient<Database>({ cookies });
+
+    const email = await (await supabase.auth.getSession()).data.session?.user.email!;
+
+    const { error } = await supabase
+        .from("chats")
+        .update({
+            chat: []
+        })
+        .eq("email", email);
+
+    if(error) {
+        return {
+            ok: false,
+            message: "You're not signed in! Please sign in to clear chats."
+        }
+    }
+    
+    return {
+        ok: true,
+        message: "Successfully cleared your chats!"
     }
 }

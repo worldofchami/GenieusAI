@@ -1,6 +1,6 @@
 :root {
-	color-scheme: dark;
-	--radius: 14px;
+    color-scheme: dark;
+    --radius: 14px;
 }
 
 html {
@@ -14,7 +14,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-	display: none !important;
+    display: none !important;
 }
 
 .frame_container {
@@ -24,4 +24,19 @@ body {
 
 iframe {
     background: rgb(20 20 20);
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 0;
+    position: relative;
+    top: 1px;
+}
+
+body {
+    background: none;
 }

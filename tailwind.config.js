@@ -21,6 +21,7 @@ module.exports = {
 				contrast: "#434343",
                 contrastlt: "#7f7f7f",
                 accent: "#00397B",
+                secAccent: "#105d10",
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
                 ring: "hsl(var(--ring))",

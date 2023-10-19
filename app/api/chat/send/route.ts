@@ -60,7 +60,7 @@ export async function POST(req: Request) {
             const currentChat = res.data?.[0].chat!;
 
             // Store new chat
-            await supabase
+            const {error}=await supabase
                 .from("chats")
                 .update({
                     chat: [
@@ -75,9 +75,9 @@ export async function POST(req: Request) {
                         }
                     ]
                 })
-                .match({
-                    email
-                });
+                .eq("email", email);
+
+            console.error(error)
         }
     });
 

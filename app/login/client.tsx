@@ -72,7 +72,7 @@ export const LoginForm: FunctionComponent<LoginFormProps> = ({ login }) => {
     return (
         <>
         <form action={handleSubmit} className="mt-4 flex flex-col gap-y-2">
-            <div>
+            {/* <div>
                 <div className="w-20 h-10 flex items-center justify-center px-2 rounded-[4px] glass cursor-pointer">
                     <Image
                         src="/icons/google.svg"
@@ -85,12 +85,13 @@ export const LoginForm: FunctionComponent<LoginFormProps> = ({ login }) => {
             </div>
             <div className="text-center">
                 <span className="font-light text-sm text-contrastlt">━━━━━━━ or ━━━━━━━━</span>
-            </div>
+            </div> */}
             <TextInput
                 label="Email"
                 type="email"
                 placeholder="johnmckenzie@org.com"
                 name="email"
+                autoFocus
             />
             <div className="relative">
                 <TextInput

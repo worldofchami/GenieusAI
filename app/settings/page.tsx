@@ -2,7 +2,7 @@ import { Database } from "@/types/supabase";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { Button, LogOutButton } from "../(util)/components";
+import { Button, ClearChatButton, LogOutButton } from "../(util)/components";
 import { API_URL } from "../layout";
 
 export const dynamic = "force-dynamic";
@@ -24,6 +24,8 @@ export default async function Page() {
         });
     }
 
+
+
     return (
         <>
         <div className="w-full h-full flex flex-col items-center justify-center">
@@ -37,6 +39,9 @@ export default async function Page() {
                             Back to Chat
                         </Button>
                     </Link>
+                    <ClearChatButton>
+                        Clear Chat
+                    </ClearChatButton>
                     <div>
                         <LogOutButton className="glass bg-transparent">
                             Sign Out

@@ -8,6 +8,8 @@ import { useCustomRef } from "./hooks";
 import { twMerge } from "tailwind-merge";
 import { useRouter } from "next/navigation";
 import { Message as AIMessage } from "ai/react";
+import { clearChat } from "./actions";
+import { toast } from "react-hot-toast";
 
 export const API_URL = process.env.NODE_ENV === "production" ? "" : "http://localhost:3000/api";
 
@@ -19,7 +21,7 @@ export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildr
     return (
         <>
         <div
-            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right break-all", props.className)}
+            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right", props.className)}
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -34,7 +36,7 @@ export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChi
     return (
         <>
         <div
-            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left break-all", props.className)}
+            className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left", props.className)}
         >
             <p className="text-xs leading-relaxed font-light">
                 {children}
@@ -54,6 +56,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
 
     const handleCompletion = async (message: AIMessage) => {
         messages.push(message);
+        scrollToBottom();
     }
 
     const { messages, input: prompt, handleInputChange, handleSubmit: sendChat, isLoading } = useChat({
@@ -73,12 +76,15 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             <GenieusChatBubble key={index}>{content}</GenieusChatBubble>
     });
 
-    useEffect(() => {
-
+    const scrollToBottom = () => {
         chatRef.current.scrollTo({
             top: chatRef.current.scrollHeight + 10000,
             behavior: "smooth"
         });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
 
         return () => {};
 
@@ -116,7 +122,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             />
             <button
                 type="submit"
-                className="w-12 h-12 grid place-content-center cursor-pointer"
+                className="w-12 h-12 grid place-content-center cursor-pointer hover:opacity-80"
             >
                 <Wand2Icon width={18} height={18} />
             </button>
@@ -137,7 +143,6 @@ export const TextInput: FunctionComponent<TextInputProps> = ({ label, ...props }
             <input
                 { ...props }
                 className={twMerge("h-10 w-full bg-[#1f1f1f] font-light text-xs rounded-[6px] stdborder pl-3 placeholder:text-contrast", props.className)}
-                autoFocus
                 autoComplete="off"
             />
         </div>
@@ -181,6 +186,32 @@ export const LogOutButton: FunctionComponent<ButtonProps> = ({ children, ...prop
             { ...props }
             onClick={handleSignOut}
             className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-accent hover:opacity-90", props.className)}
+        >
+            {children}
+        </button>
+        </>
+    )
+}
+
+export const ClearChatButton: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
+    const handleClearChat = async () => {
+        const { ok, message } = await clearChat();
+
+        if(ok) {
+            toast.success(message);
+        }
+
+        else {
+            toast.error(message);
+        }
+    }
+
+    return (
+        <>
+        <button
+            { ...props }
+            onClick={handleClearChat}
+            className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-secAccent hover:opacity-90", props.className)}
         >
             {children}
         </button>

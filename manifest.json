@@ -1,9 +1,9 @@
 {
 	"manifest_version": 3,
-	"name": "GenieusAI Chrome extension",
+	"name": "GenieusAI Chrome Extension",
 	"short_name": "GenieusAI",
 	"version": "0.0.1",
-	"description": "Your personal chatbot",
+	"description": "Your Personal Chat Bot - Right In Your Browser!",
 	"host_permissions": [
 		"*://*.genieusai.vercel.app/",
 		"http://localhost:3000/"

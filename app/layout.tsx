@@ -21,8 +21,12 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
+            <link
+              rel="icon"
+              href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞‍♂️</text></svg>"
+            />
             <body className={bricolageGrotesque.className}>
-                <section className="h-full w-full bg-bg px-6 pb-6 flex flex-col rounded-lg border-[1px] border-contrast">
+                <section className="h-full w-full bg-bg px-6 pb-6 flex flex-col ">
                     <Toaster
                        containerClassName="relative bg-bg"
                        containerStyle={{

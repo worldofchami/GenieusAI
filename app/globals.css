@@ -28,7 +28,7 @@
 	}
 
 	.glass {
-		background: rgb(0 0 0 / 22%);
+		background: rgba(43, 38, 38, 0.22);
 		box-shadow: 0 4px 30px rgb(0 0 0 / 10%);
 		backdrop-filter: blur(6.9px);
 		-webkit-backdrop-filter: blur(6.9px);

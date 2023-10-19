@@ -59,6 +59,15 @@ export default async function Page() {
                     />
                 </div>
                 <h1>Genieus AI</h1>
+                <Link href="/">
+                    <Image
+                        src="/icons/home.svg"
+                        alt="Home"
+                        width={30}
+                        height={30}
+                        className="w-7 h-7 absolute right-8 my-auto top-0 bottom-0"
+                    />
+                </Link>
                 <Link href="/settings">
                     <Image
                         src="/icons/cog.svg"

@@ -3,7 +3,6 @@ import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button, ClearChatButton, LogOutButton } from "../(util)/components";
-import { API_URL } from "../layout";
 
 export const dynamic = "force-dynamic";
 
@@ -17,15 +16,7 @@ export default async function Page() {
     }
 
     catch(e) { console.error(e) }
-
-    const signUserOut = async () => {
-        await fetch(`${API_URL}/auth/signout`, {
-            method: "POST"
-        });
-    }
-
-
-
+    
     return (
         <>
         <div className="w-full h-full flex flex-col items-center justify-center">

@@ -5,20 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { submitPrompt } from "../(util)/actions";
 import { ChatContainer, Button } from "../(util)/components";
-import { EmptyChatContainer } from "../(util)/emptycomponents";
 import { Message } from "../(util)/interfaces";
+import { useAuth } from "../(util)/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
     const supabase = createServerComponentClient<Database>({ cookies });
-
-    let email = "";
+    const { user } = useAuth({ cookies });
 
     let messages: Message[] = [];
 
-    try {
-        email = (await supabase.auth.getSession()).data.session?.user.email as string;
+    if(user) {
+        const email = user.email;
 
         const { data } = await supabase
             .from("chats")
@@ -40,8 +39,6 @@ export default async function Page() {
             }).filter(_ => _) as Message[];
         }
     }
-
-    catch(e) { console.error(e) }
 
     return (
         <>

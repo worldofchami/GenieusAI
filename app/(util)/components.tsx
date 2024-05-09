@@ -117,7 +117,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             {
                 isLoading &&
                 <div className="w-full h-12 flex justify-center">
-                    <Loader2 className="animate-spin text-contrast" />
+                    <Loader2 className="animate-spin text-accent" />
                 </div>
             }
         </div>

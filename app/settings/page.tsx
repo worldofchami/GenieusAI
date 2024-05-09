@@ -1,21 +1,18 @@
-import { Database } from "@/types/supabase";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs"
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button, ClearChatButton, LogOutButton } from "../(util)/components";
+import { useAuth } from "../(util)/utils";
 
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-    const supabase = createServerComponentClient<Database>({ cookies });
+    const { user } = useAuth({ cookies });
 
     let username = "";
 
-    try {
-        username = (await supabase.auth.getUser()).data.user?.user_metadata.username;
+    if(user) {
+        username = user.user_metadata.username;
     }
-
-    catch(e) { console.error(e) }
     
     return (
         <>

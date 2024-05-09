@@ -1,4 +1,5 @@
 import { Message } from "@/app/(util)/interfaces";
+import { useAuth } from "@/app/(util)/utils";
 import { Database } from "@/types/supabase";
 import { createRouteHandlerClient, User } from "@supabase/auth-helpers-nextjs";
 import { OpenAIStream, StreamingTextResponse } from "ai";
@@ -14,7 +15,7 @@ const openai = new OpenAI(config);
 export const runtime = "edge";
 
 export async function POST(req: Request) {
-    const { messages } = await req.json();
+    const { messages, email } = await req.json();
 
     // Tell Genieus some information about itself to be more helpful
     const configMessage: Message = {
@@ -23,7 +24,6 @@ export async function POST(req: Request) {
     };
 
     const supabase = createRouteHandlerClient<Database>({ cookies });
-    const email = await (await supabase.auth.getSession()).data.session?.user.email || "anon";
 
     const response = await openai.chat.completions.create({
         model: "gpt-4",
@@ -59,7 +59,9 @@ export async function POST(req: Request) {
                 .select("chat")
                 .match({ email });
 
-            const currentChat = res.data?.[0].chat!;
+            const currentChat = res.data?.[0]?.chat;
+
+            if(!currentChat) return;
 
             // Store new chat
             await supabase

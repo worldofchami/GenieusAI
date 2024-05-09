@@ -7,15 +7,17 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { API_URL } from "../layout";
 import { DBResponse, ILoginForm, ISignUpForm, Message, PromptResponse } from "./interfaces";
+import { useAuth } from "./utils";
 
 export async function submitPrompt(chat: Message[]): Promise<PromptResponse> {
+    const { user } = useAuth({ cookies });
+
     if(chat.length > 0) {
         try {
             // Only use last 15 messages
             const newChat = chat.slice(-15);
 
-            const supabase = createServerActionClient<Database>({ cookies });
-            const email = await (await supabase.auth.getSession()).data.session?.user.email || "anon";
+            const email = user ? user.email : "anon";
 
             const response: StreamingTextResponse = await fetch(`${API_URL}/chat/send`, {
                 method: "POST",

@@ -7,7 +7,7 @@ export default async function Page() {
 		<div className="w-full h-full flex flex-col justify-center gap-y-4 text-center">
 			<h1 className="text-9xl">🧞‍♂️</h1>
 			<h1 className="text-3xl">Welcome to Genieus!</h1>
-			<span className="mb-8 text-contrastlt">Your personal AI genie in the form of a Chrome extension. You can also use Genieus through your browser.</span>
+			<span className="mb-8 text-contrastlt">Your personal AI-powered genie. Fun side project made with the Vercel AI SDK.</span>
 			<Link href="/chat">
 				<Button>
 					Chat

@@ -10,21 +10,23 @@ import { useRouter } from "next/navigation";
 import { Message as AIMessage } from "ai/react";
 import { clearChat } from "./actions";
 import { toast } from "react-hot-toast";
+import Markdown from "react-markdown";
+import { useLocalStorage, useSessionStorage } from "usehooks-ts";
 
 export const API_URL = process.env.NODE_ENV === "production" ? "" : "http://localhost:3000/api";
 
 interface ChatBubbleProps extends HTMLProps<HTMLDivElement> {
-
+    content: string;
 }
 
-export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildren> = ({ children, ...props }) => {
+export const UserChatBubble: FunctionComponent<ChatBubbleProps> = ({ content, ...props }) => {
     return (
         <>
         <div
             className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 user_cb rounded-xs bg-[#2E2E2E] ml-auto text-right", props.className)}
         >
-            <p className="text-xs leading-relaxed font-light">
-                {children}
+            <p className="text-xs leading-relaxed font-light max-md:text-lg">
+                <Markdown>{content}</Markdown>
             </p>
         </div>
         </>
@@ -32,14 +34,14 @@ export const UserChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildr
 }
 
 
-export const GenieusChatBubble: FunctionComponent<ChatBubbleProps & PropsWithChildren> = ({ children, ...props }) => {
+export const GenieusChatBubble: FunctionComponent<ChatBubbleProps> = ({ content, ...props }) => {
     return (
         <>
         <div
             className={twMerge("w-fit h-fit max-w-[90%] px-4 py-2 genieus_cb rounded-xs bg-accent mr-auto text-left", props.className)}
         >
-            <p className="text-xs leading-relaxed font-light">
-                {children}
+            <p className="text-xs leading-relaxed font-light max-md:text-lg">
+                <Markdown>{content}</Markdown>
             </p>
         </div>
         </>
@@ -51,11 +53,26 @@ interface PromptFormProps {
     messages: Message[];
 }
 
-export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ messages: prevMessages, submitPrompt, children }) => {
+export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildren> = ({ messages: persistedMesages, submitPrompt, children }) => {
+    const [localMessages, writeLocalMessages] = useLocalStorage<Message[]>("messages", []);
+    const [activeMessages, setActiveMessages] = useState<Message[]>(persistedMesages);
+
+    useEffect(() => {
+        // If previous messages exist, prefer them and flush local storage & populate with
+        if(persistedMesages.length > 0) {
+            writeLocalMessages(persistedMesages);
+        }
+
+        else {
+            setActiveMessages(localMessages);
+        }
+    }, []);
+
     const chatRef = useCustomRef<HTMLDivElement>();
 
     const handleCompletion = async (message: AIMessage) => {
         messages.push(message);
+        writeLocalMessages((curr) => [...curr, { role: "assistant", content: message.content } as Message]);
         scrollToBottom();
     }
 
@@ -74,6 +91,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
         
         if(prompt) {
             sendChat(ev);
+            writeLocalMessages((curr) => [...curr, { role: "user", content: prompt } as Message]);
         }
 
         // Not loading, but no prompt entered
@@ -82,10 +100,10 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
         }
     }
 
-    const messageBlocks = [...prevMessages, ...messages].map(({ role, content }, index) => {
+    const messageBlocks = [...activeMessages, ...messages].map(({ role, content }, index) => {
         return role === "user" ?
-            <UserChatBubble key={index}>{content}</UserChatBubble> :
-            <GenieusChatBubble key={index}>{content}</GenieusChatBubble>
+            <UserChatBubble key={index} content={content} /> :
+            <GenieusChatBubble key={index} content={content} />
     });
 
     const scrollToBottom = () => {
@@ -94,6 +112,16 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             behavior: "smooth"
         });
     };
+
+    // useEffect(() => {
+    //     if(_prevMessages.length > 0) {
+    //         writePrevMessages(_prevMessages);
+    //     }
+        
+    //     else {
+    //         writePrevMessages(messages.map(({ role, content }) => ({ role, content }) as Message));
+    //     }
+    // }, [messages]);
 
     useEffect(() => {
         scrollToBottom();
@@ -107,10 +135,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
         <div className="w-full h-full flex flex-col gap-y-2 overflow-auto pt-4 pb-2 mb-4" ref={chatRef}>
             {
                 !children &&
-                <GenieusChatBubble>
-                    Welcome! I'm your personal AI genie {":)"} 🧞‍♂️
-                    Ask anything, and I'll do my best to grant you your wish... 🪄
-                </GenieusChatBubble>
+                <GenieusChatBubble content="Welcome! I'm your personal AI genie :) 🧞‍♂️ Ask anything, and I'll do my best to grant you your wish... 🪄" />
             }
             {children}
             {messageBlocks}
@@ -125,7 +150,7 @@ export const ChatContainer: FunctionComponent<PromptFormProps & PropsWithChildre
             <input
                 type="text"
                 placeholder="Ask me anything..."
-                className="h-full w-full bg-transparent font-light text-xs"
+                className="h-full w-full bg-transparent font-light text-xs max-md:text-lg"
                 name="prompt"
                 autoFocus
                 value={prompt}
@@ -207,9 +232,16 @@ export const LogOutButton: FunctionComponent<ButtonProps> = ({ children, ...prop
 }
 
 export const ClearChatButton: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
+    const [_, writeLocalMessages] = useLocalStorage<Message[]>("messages", []);
+
+    function flushChats() {
+        writeLocalMessages([]);
+        return clearChat();
+    }
+    
     const handleClearChat = async () => {
         const { ok, message } = await toast.promise(
-            clearChat(),
+            flushChats(),
             {
                 loading: "Clearing your chats...",
                 success: "",
@@ -239,6 +271,27 @@ export const ClearChatButton: FunctionComponent<ButtonProps> = ({ children, ...p
             { ...props }
             onClick={handleClearChat}
             className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-secAccent hover:opacity-90", props.className)}
+        >
+            {children}
+        </button>
+        </>
+    )
+}
+
+export const ClearLocalChatButton: FunctionComponent<ButtonProps> = ({ children, ...props }) => {
+    const [_, writeLocalMessages] = useLocalStorage<Message[]>("messages", []);
+
+    const handleClear = () => {
+        writeLocalMessages([]);
+        toast.success("Successfully cleared your chats!");
+    }
+
+    return (
+        <>
+        <button
+            { ...props }
+            onClick={handleClear}
+            className={twMerge("h-fit w-fit px-3 py-1 stdborder rounded-[4px] font-light bg-accent hover:opacity-90", props.className)}
         >
             {children}
         </button>

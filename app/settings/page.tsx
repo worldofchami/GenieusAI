@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
-import { Button, ClearChatButton, LogOutButton } from "../(util)/components";
+import { Button, ClearChatButton, ClearLocalChatButton, LogOutButton } from "../(util)/components";
 import { useAuth } from "../(util)/utils";
 
 export const dynamic = "force-dynamic";
@@ -49,6 +49,9 @@ export default async function Page() {
                             Back to Chat
                         </Button>
                     </Link>
+                    <ClearLocalChatButton>
+                        Clear Chat
+                    </ClearLocalChatButton>
                     <Link href="/login">
                         <Button className="bg-secAccent">
                             Login

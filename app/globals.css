@@ -105,3 +105,9 @@ a {
 	content: "Please enter a valid " attr(data-label) "!";
 	@apply h-3 pl-1 font-light text-xs text-contrastlt text-left transition-[height] duration-150 ease-in-out;
 }
+
+pre {
+	text-wrap: balance;
+	padding: 3px;
+	@apply bg-bg text-sm;
+}

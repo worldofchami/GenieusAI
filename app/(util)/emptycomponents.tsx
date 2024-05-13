@@ -7,10 +7,7 @@ export const EmptyChatContainer = () => {
     return (
         <>
         <div className="w-full h-full pt-4 pb-2">
-            <GenieusChatBubble>
-                Welcome! I'm your personal AI genie {":)"} 🧞‍♂️
-                Ask anything, and I'll do my best to grant you your wish... 🪄
-            </GenieusChatBubble>
+            <GenieusChatBubble content="Welcome! I'm your personal AI genie :) 🧞‍♂️ Ask anything, and I'll do my best to grant you your wish... 🪄" />
         </div>
         <div className="h-12 flex pl-4 rounded-[6px] bg-[#2F2F2F] stdborder">
             <input
